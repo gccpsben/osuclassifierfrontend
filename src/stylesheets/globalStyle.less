@@ -1,0 +1,23 @@
+.tight { margin:0px; padding:0px; }
+.fullSize { .fullHeight; .fullWidth; }
+.fullHeight { height:100%; }
+.fullWidth { width:100%; }
+.horizonalRight { display:flex; justify-content:flex-end; text-align: right; }
+.horizonalLeft { display:flex; justify-content:flex-start; text-align: left; }
+.verticallyCenter { display:flex; align-items: center; }
+.verticallyBottom { display:flex; align-items: flex-end; }
+.horizontallyCenter { display:flex; justify-content: center; }
+.center { display:flex; justify-content: center; align-items: center; }
+.ellipsis { text-overflow: ellipsis; white-space: nowrap; display:block; overflow:hidden !important; }
+.gridBase { display:grid; }
+
+.easeAll(@seconds) { transition: all @seconds ease; }
+.size(@width, @height) { width:@width; height:@height; }
+.horiMargin(@amount) { margin-left: @amount; margin-right: @amount; }
+.horiPadding(@amount) { padding-left: @amount; padding-right: @amount; }
+.squareSize(@size) { width:@size; height:@size; }
+.circle(@size) { .squareSize(@size); border-radius: calc(@size / 2); }
+.bg(@parameter) { background:@parameter; }
+.roundSquare(@size, @radius) { .squareSize(@size); border-radius: @radius; }
+.border1px(@color) { border:1px solid @color; }
+.grid(@cols, @rows, @area) { .gridBase; grid-template-columns:@cols; grid-template-rows:@rows; grid-template-areas: @area; }

@@ -1,0 +1,15 @@
+@background: rgb(34,35,38); @backgroundDark: rgb(27,29,33);
+@surface: rgb(27,29,33); @surfaceHigh: rgb(51,52,56);
+@focus: rgb(43,179,255); @focusDark: rgb(28,44,55);
+@font: Ubuntu; @foreground: rgb(189,189,190);
+@success: rgb(155,255,155); @successDark: rgb(50,100,50);
+@error: rgb(255,155,155); @errorDark: rgb(100,50,50);
+@yellow: rgb(255,255,155); @yellowDark: rgb(100,100,50);
+@blue: rgb(200,200,255); @blueDark: rgb(80,80,100);
+@gridCellBorderRadius: 5px; @gridCellPadding: 20px;
+
+.minButtonBase { cursor:pointer; border:0px; transition: all 0.2s ease; }
+.figureHeader { color: @foreground; font-weight:bold; font-size:30px; }
+.arrowButton { color:white; background:transparent; .minButtonBase; }
+.arrowButton.disabled { opacity: 0.4; cursor:none; }
+.arrowPageNavText { font-size:16px; font-family: Consolas; color:white; .horiMargin(9px); }
