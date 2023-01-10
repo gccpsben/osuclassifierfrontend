@@ -9,9 +9,9 @@
 				<span class="material-icons" style="font-size:19px; margin-left:5px; transform: translateY(3px);">favorite</span>
 			</div>
 		</div>
-		<div id="requirementModal" v-if="isModalOpen" style="position:fixed; top:0px; left:0px; width:100vw; height:100vh; z-index:999;" class="center">
+		<div id="requirementModal" v-if="isModalOpen" class="center">
 			<div style="position:fixed; top:0px; left:0px; width:100vw; height:100vh; background:#00000088; z-index:998;" @click="isModalOpen = false" ></div>
-			<ubGrid rows="50px 1fr" style="width:min(500px, max(100px, 50vw)); height:500px; background:#FF66AA22; backdrop-filter: blur(9px); border:1px solid #FF66AA44; border-radius: 5px; padding:25px; z-index:999;">
+			<ubGrid id="requirementModalContent" rows="50px 1fr">
 				<gridArea area="up"  style="position:relative;">
 					<lrGrid columns="1fr auto">
 						<div class="verticallyCenter"><h1 class="h1Min" style="font-weight:400; font-size:24px; display:block;">Edit Requirements:</h1></div>
@@ -51,14 +51,20 @@
 						<GridShortcut class="statSelectorContainer" v-for="statDefinition in stats" 
 						rows="1fr" columns="100px auto 1fr auto" areas="'statLabel minInput selector maxInput'">
 
-							<gridArea area="statLabel"><h1>{{ statDefinition[0] }}:</h1></gridArea>
-							<gridArea area="minInput"><input @keypress="isNumber($event)" v-model.number="statDefinition[1]" class="statSelectorMinBox" type="text" :step="statDefinition[5]"/></gridArea>
+							<gridArea area="statLabel">
+								<h1>{{ statDefinition[0] }}:</h1>
+							</gridArea>
+							<gridArea area="minInput">
+								<input @keypress="isNumber($event)" v-model.number="statDefinition[1]" class="statSelectorMinBox" type="text" :step="statDefinition[5]"/>
+							</gridArea>
 							<gridArea area="selector">
 								<rangeSelector 
 								:rangeMax="statDefinition[4]" :rangeMin="statDefinition[3]" :step="statDefinition[5]"
 								v-model:max="statDefinition[2]" v-model:min="statDefinition[1]"></rangeSelector>
 							</gridArea>
-							<gridArea area="maxInput"><input @keypress="isNumber($event)" v-model.number="statDefinition[2]" class="statSelectorMaxBox" type="text" :step="statDefinition[5]"/></gridArea>
+							<gridArea area="maxInput">
+								<input @keypress="isNumber($event)" v-model.number="statDefinition[2]" class="statSelectorMaxBox" type="text" :step="statDefinition[5]"/>
+							</gridArea>
 
 						</GridShortcut>
 						
@@ -120,19 +126,23 @@
 		</div>
 		<div id="mapsSection">
 			<div style="position: relative;" v-if="!isLoading">
+				
 				<div v-for="box in sampleData" style="position: relative;" class="mapBox" 
 				:class="{'DT': box.label.includes('DT'), 'HR': box.label.includes('HR'), 'FM': box.label.includes('FM'), 'HD': box.label.includes('HD'), 'NM': box.label.includes('NM'), 'TB': box.label.includes('TB')}">
-					<div :style="{'background-image':box.set_id == null ? `url(https://osu.ppy.sh/assets/images/default-bg.7594e945.png)` : `url(https://assets.ppy.sh/beatmaps/${box.set_id}/covers/card.jpg)`}" style="background-size: cover; position:absolute;" class="fullSize"></div>
+				
+					<div :style="{'background-image':box.set_id == null ? `url(https://osu.ppy.sh/assets/images/default-bg.7594e945.png)` : `url(https://assets.ppy.sh/beatmaps/${box.set_id}/covers/card.jpg)`}" 
+					style="background-size: cover; position:absolute;" class="fullSize"></div>
+					
 					<div class="mapBoxHoverAnimation"></div>
 					<div @click="" class="mapBoxContent">
 						<lrGrid columns="1fr 100px" rows="1fr" areas="'left right'" style="padding:15px 15px 0px 15px; color:white;">
-							<gridArea area="left"><h1 class="h1Min" style="font-size:18px; font-weight: 400;">{{ box.title }}</h1></gridArea>
+							<gridArea area="left"><h1 class="titleText">{{ box.title }}</h1></gridArea>
 							<gridArea area="right" class="horizonalRight">
 								<div style="position: absolute;">
-									<h1 class="h1Min" style="font-size:14px; font-weight: 400; display:inline;">{{ getBoxTopConfidence(box) }}</h1>
-									<h1 class="h1Min" style="font-size:18px; font-weight: 400; display:inline;">{{ box.label }}</h1>
+									<h1 class="h1Min" style="font-size:14px; display:inline;">{{ getBoxTopConfidence(box) }}</h1>
+									<h1 class="h1Min" style="font-size:18px; display:inline;">{{ box.label }}</h1>
 									<div style="margin-top:5px;">
-										<h1 class="h1Min" style="font-size:14px; padding:3px 0px 0px 15px; font-weight: 400; display: inline;">{{ box.stars }}</h1>
+										<h1 class="starText">{{ box.stars }}</h1>
 										<span class="material-icons" style="font-size: 18px; color:var(--accent); margin-left: 5px; transform: translateY(3px); ">star</span>
 									</div>
 								</div>
@@ -144,19 +154,42 @@
 									<ubGrid rows="1fr 1fr">
 										<gridArea area="up">
 											<div class="horizontallyCenter">
-												<h1 class="h1Min" style="font-size:12px; font-weight:400;">{{ item.toUpperCase() }}</h1>
+												<h1 class="h1Min" style="font-size:12px;">{{ item.toUpperCase() }}</h1>
 											</div>
 										</gridArea>
 										<gridArea area="down">
 											<div class="horizontallyCenter">
-												<h1 class="h1Min" style="font-size:16px; font-weight:400;">{{ box[item] }}</h1>
+												<h1 class="h1Min" style="font-size:16px;">{{ box[item] }}</h1>
 											</div>
 										</gridArea>
 									</ubGrid>
 								</gridArea>
 							</GridShortcut>
 						</div>
-						<h1 class="h1Min" style="font-size:14px; padding:3px 0px 0px 15px; font-weight: 400;">{{ box.version }}</h1>
+						<div class="tight" style="position: absolute; height:auto; bottom:0; right:0px; width:150px; margin:15px;">
+							<GridShortcut class="fullSize" columns="1fr" rows="1fr 1fr 1fr 1fr">
+								<div v-for="labelScorePair in mapBoxToLabelsList(box).splice(0,4)">
+									<lrGrid columns="50px 1fr">
+										<div>
+											<div :style="{'color':labelToColorHex(labelScorePair[0])}" 
+											style="font-size:8px; font-weight:400;" class="h1Min">
+											{{ (labelScorePair[1] * 100).toFixed(0) }}% {{ labelScorePair[0] }}
+											</div>
+										</div>
+										<div>
+											<lrGrid class="fullSize" 
+											:columns="`${getConfidenceGridPortions(box, labelScorePair[0])[0]}fr ${getConfidenceGridPortions(box, labelScorePair[0])[1]}fr`">
+
+												<div></div>
+												<div class="fullSize" style="opacity: 0.8;" :style="{'background':labelToColorHex(labelScorePair[0])}"></div>
+
+											</lrGrid>
+										</div>
+									</lrGrid>
+								</div>
+							</GridShortcut>
+						</div>
+						<h1 class="diffText">{{ box.version }}</h1>
 					</div>
 					<gridShortcut columns="1fr" rows="1fr 1fr" areas="'bancho' 'banchodirect'" id="portals">
 						
@@ -199,7 +232,7 @@ export default
 	{
 		getBoxTopConfidence(box)
 		{
-			return `${(box[box.label.replace(" ","")] * 100).toFixed(0)}% `;
+			return `${(box.labels[box.label.replace(" ","")] * 100).toFixed(0)}% `;
 		},
 		isNumber (evt) 
 		{
@@ -259,6 +292,42 @@ export default
 				iframe.contentWindow.document.close();
 				iframe.outerHTML = "";
 			}
+		},
+		mapBoxToLabelsList(mapBoxJSON)
+		{
+			// example output: [["NM1", 0.3], ...]
+			var keysToInclude = Object.keys(mapBoxJSON.labels);
+			var unorderedList = keysToInclude.map(label => { return [label, mapBoxJSON.labels[label]]; });
+			var orderedList = unorderedList.sort((a,b) => { return b[1] - a[1] });
+			return orderedList;
+		},
+		labelToColorHex(labelString)
+		{
+			switch (labelString.toLowerCase().replace(/[0-9]/g, ''))
+			{
+				case "nm":
+					return "#c9c9c9";
+				case "dt":
+					return "#aa88ff";
+				case "hr":
+					return "#ed7787";
+				case "tb":
+					return "#ed1121";
+				case "hd":
+					return "#ffcc22";
+				case "fm":
+					return "#66ccff";
+				default:
+					return "red"
+			}
+		},
+		getConfidenceGridPortions(mapJSON, label)
+		{
+			var labels = mapJSON.labels;
+			var maxConf = Object.values(labels).sort().reverse()[0];
+			var labelNormalizedScore = labels[label] / maxConf;
+			console.log([1 - labelNormalizedScore, labelNormalizedScore]);
+			return [1 - labelNormalizedScore, labelNormalizedScore];
 		}
 	},
 	data()
@@ -356,10 +425,10 @@ export default
 @import "/src/stylesheets/globalStyle.less";
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@100;300;500;800&display=swap');
 
-* { transition: 0; font-family: 'Exo 2', sans-serif; }
+* { transition: 0; font-family: 'Exo 2', sans-serif; font-weight:400; }
 
 // Basic shortcuts
-.h1Min { margin:0px; padding:0px; color:white; font-size:16px; font-weight:100; }
+.h1Min { margin:0px; padding:0px; color:white; font-size:16px; font-weight:400; }
 .materialIconDisabled { opacity: 0.3; cursor:not-allowed; }
 .maxCenter { display:flex; width:100%; height:100%; justify-content: center; align-items: center; }
 .debug { background:rgba(255,0,0,0.2); border:0px; }
@@ -369,6 +438,41 @@ a { color:#66CCFF; text-decoration: none !important; font-weight: bold; }
 a:visited { color:#8866EE; }
 #background { background-image: url(/src/assets/bg.png); .fullSize; z-index: -999; position: fixed; top: 0; }
 #navBar { height:55px; position:static; top:0; .bg(rgba(55,20,55,0.4)); filter:drop-shadow(#000 0px 1px 4px); }
+#requirementModal
+{ 
+	position:fixed; 
+	top:0px; 
+	left:0px;
+	width:100vw; 
+	height:100vh; 
+	z-index:999; 
+}
+#requirementModalContent 
+{ 
+	width:min(500px, max(100px, 50vw)); 
+	height:500px; 
+	background:#FF66AA22; 
+	backdrop-filter: blur(9px); 
+	border:1px solid #FF66AA44; 
+	border-radius: 5px; 
+	padding:25px; 
+	z-index:999; 
+}
+.diffText
+{
+	.h1Min; .ellipsis;
+	width:70%; font-size:14px; padding:3px 0px 0px 15px; font-weight: 400;
+}
+.titleText
+{
+	.h1Min; .ellipsis; 
+	width:70%; font-size:18px; font-weight: 400; width:75%;
+}
+.starText 
+{
+	.h1Min;
+	font-size:14px; padding:3px 0px 0px 15px; font-weight: 400; display: inline;
+}
 
 // Selectors (organized by Sections):
 #formSection
@@ -497,10 +601,7 @@ a:visited { color:#8866EE; }
 	}
 }
 
-.labelBox.enabled
-{
-	opacity: 1;
-}
+.labelBox.enabled { opacity: 1; }
 
 .circleBase { position: absolute; border:5px solid #FF66AA; width:50px; height:50px; border-radius: 999px; background-color:#FF66AA44; }
 #hitCircle 
@@ -572,6 +673,7 @@ a:visited { color:#8866EE; }
 			background-size: cover; position:absolute; 
 			border:1px solid var(--accent);
 			.fullSize;
+			overflow: hidden;
 			.easeAll(0.2s);
 			cursor: pointer;
 			h1 { color:var(--accent); }
