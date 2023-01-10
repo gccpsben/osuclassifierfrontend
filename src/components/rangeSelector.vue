@@ -1,9 +1,9 @@
 <template>
     <div style="width:500px; height:40px; position:relative;" class="center">
-        <input :step="step" @input="$emit('update:min', Number.parseFloat($event.target.value))" :value="min" type="range" :min="rangeMin" :max="rangeMax" id="slider-1" style="position:absolute; z-index: 2;"/>
+        <input :step="step" @input="$emit('update:min', Number.parseFloat($event.target.value))" :value="Number.parseFloat(min)" type="range" :min="rangeMin" :max="rangeMax" id="slider-1" style="position:absolute; z-index: 2;"/>
         <div :style="{'left':sliderTrackLeft, 'width':sliderTrackWidth}" class="slider-track"></div>
         <div class="slider-track-bg"></div>
-        <input :step="step" @input="$emit('update:max', Number.parseFloat($event.target.value))" :value="max" type="range" :min="rangeMin" :max="rangeMax" ref="slider2" id="slider-2" style="position:absolute; z-index: 2;"/>
+        <input :step="step" @input="$emit('update:max', Number.parseFloat($event.target.value))" :value="Number.parseFloat(max)" type="range" :min="rangeMin" :max="rangeMax" ref="slider2" id="slider-2" style="position:absolute; z-index: 2;"/>
     </div>
 </template>
 

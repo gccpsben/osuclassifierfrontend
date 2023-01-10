@@ -32,7 +32,7 @@
 				<gridArea area="search" id="mainSearchGridContainer">
 					<div id="mainSearchGrid">
 						<div> <span class="material-icons">search</span> </div>
-						<input id="mainSearch" v-model="queryText" type="text" placeholder="Search for names, tags etc..." />
+						<input @keyup.native.enter="getMaps" id="mainSearch" v-model="queryText" type="text" placeholder="Search for names, tags etc..." />
 					</div>
 				</gridArea>
 				<gridArea area="tabs">
@@ -52,13 +52,13 @@
 						rows="1fr" columns="100px auto 1fr auto" areas="'statLabel minInput selector maxInput'">
 
 							<gridArea area="statLabel"><h1>{{ statDefinition[0] }}:</h1></gridArea>
-							<gridArea area="minInput"><input v-model="statDefinition[1]" class="statSelectorMinBox" type="text" :step="statDefinition[5]"/></gridArea>
+							<gridArea area="minInput"><input @keypress="isNumber($event)" v-model.number="statDefinition[1]" class="statSelectorMinBox" type="text" :step="statDefinition[5]"/></gridArea>
 							<gridArea area="selector">
 								<rangeSelector 
 								:rangeMax="statDefinition[4]" :rangeMin="statDefinition[3]" :step="statDefinition[5]"
 								v-model:max="statDefinition[2]" v-model:min="statDefinition[1]"></rangeSelector>
 							</gridArea>
-							<gridArea area="maxInput"><input v-model="statDefinition[2]" class="statSelectorMaxBox" type="text" :step="statDefinition[5]"/></gridArea>
+							<gridArea area="maxInput"><input @keypress="isNumber($event)" v-model.number="statDefinition[2]" class="statSelectorMaxBox" type="text" :step="statDefinition[5]"/></gridArea>
 
 						</GridShortcut>
 						
@@ -83,12 +83,12 @@
 						rows="1fr" columns="100px auto 1fr auto" areas="'statLabel minInput selector maxInput'">
 
 							<gridArea area="statLabel"><h1>{{ label[0] }}:</h1></gridArea>
-							<gridArea area="minInput"><input v-model="label[2]" class="statSelectorMinBox" type="text" :step="0.01"/></gridArea>
+							<gridArea area="minInput"><input @keypress="isNumber($event)" v-model.number="label[2]" class="statSelectorMinBox" type="text" :step="0.01"/></gridArea>
 							<gridArea area="selector">
 								<rangeSelector :rangeMax="1" :rangeMin="0" :step="0.01"
 								v-model:max="label[3]" v-model:min="label[2]"></rangeSelector>
 							</gridArea>
-							<gridArea area="maxInput"><input v-model="label[3]" class="statSelectorMaxBox" type="text" :step="0.01"/></gridArea>
+							<gridArea area="maxInput"><input @keypress="isNumber($event)" v-model.number="label[3]" class="statSelectorMaxBox" type="text" :step="0.01"/></gridArea>
 
 						</GridShortcut>
 
@@ -129,7 +129,8 @@
 							<gridArea area="left"><h1 class="h1Min" style="font-size:18px; font-weight: 400;">{{ box.title }}</h1></gridArea>
 							<gridArea area="right" class="horizonalRight">
 								<div style="position: absolute;">
-									<h1 class="h1Min" style="font-size:18px; font-weight: 400;">{{ box.label }}</h1>
+									<h1 class="h1Min" style="font-size:14px; font-weight: 400; display:inline;">{{ getBoxTopConfidence(box) }}</h1>
+									<h1 class="h1Min" style="font-size:18px; font-weight: 400; display:inline;">{{ box.label }}</h1>
 									<div style="margin-top:5px;">
 										<h1 class="h1Min" style="font-size:14px; padding:3px 0px 0px 15px; font-weight: 400; display: inline;">{{ box.stars }}</h1>
 										<span class="material-icons" style="font-size: 18px; color:var(--accent); margin-left: 5px; transform: translateY(3px); ">star</span>
@@ -137,9 +138,9 @@
 								</div>
 							</gridArea>
 						</lrGrid>
-						<div style="position: absolute; height:40px; bottom:0; width:150px; margin:15px;">
-							<GridShortcut columns="1fr 1fr 1fr 1fr" rows="1fr" areas="'cs ar od hp'">
-								<gridArea v-for="item in ['ar','cs', 'hp', 'od']" :area="item">
+						<div style="position: absolute; height:40px; bottom:0; width:170px; margin:15px;">
+							<GridShortcut columns="1fr 1fr 1fr 1fr 1.3fr" rows="1fr" areas="'cs ar od hp bpm'">
+								<gridArea v-for="item in ['ar','cs', 'hp', 'od', 'bpm']" :area="item">
 									<ubGrid rows="1fr 1fr">
 										<gridArea area="up">
 											<div class="horizontallyCenter">
@@ -165,24 +166,13 @@
 								<gridArea area="right"><span class="material-icons">keyboard_double_arrow_right</span></gridArea>
 							</lrGrid>
 						</gridArea>
-						
-						<!-- <gridArea area="beatconnect" class="redirectOption beatconnect">
-							<h2>Beatconnect</h2>
-							<span class="material-icons">keyboard_double_arrow_right</span>
-						</gridArea>
-						<gridArea area="banchodirect" class="redirectOption banchodirect">
-							<h2>Bancho Direct</h2>
-							<span class="material-icons">keyboard_double_arrow_right</span>
-						</gridArea> -->
+					
 					</gridShortcut>
 				</div>
 			</div>
 		</div>
 		<div id="background"></div>
-		<!-- <audio style="display:none;" controls id="audioContainer">
-			<source id="audioSource" :src="`https://b.ppy.sh/preview/${this.currentSongSetId}.mp3`" type="audio/mp3">
-			Your browser does` not support the audio element.
-		</audio>  -->
+
 	</div>
 </template>
 
@@ -202,38 +192,33 @@ export default
 	},
 	watch:
 	{
-		// currentSongSetId()
-		// {
-		// 	if (this.currentSongSetId != null)
-		// 	{
-		// 		var audio = document.getElementById("audioContainer");
-		// 		audio.load();
-		// 		if (audio.paused) { audio.play(); }
-		// 		else { audio.play(); }
-		// 	}
-		// }
+		
 	},
-	mounted()
-	{
-		// var audio = document.getElementById("audioContainer");
-		// audio.volume = 0.2;
-	},
+	mounted() { },
 	methods:
 	{
+		getBoxTopConfidence(box)
+		{
+			return `${(box[box.label.replace(" ","")] * 100).toFixed(0)}% `;
+		},
+		isNumber (evt) 
+		{
+			var keysAllowed = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
+			var keyPressed = evt.key;
+			
+			if (!keysAllowed.includes(keyPressed)) { evt.preventDefault() }
+		},
 		httpPost(theUrl, callback, body)
 		{
 			var xmlHttp = new XMLHttpRequest();
 			if (callback != undefined) xmlHttp.onreadystatechange = function ()
 			{
-				if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-				{
-					callback(xmlHttp.responseText); // Another callback here
-				}
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) callback(xmlHttp.responseText); 
 			};
 			xmlHttp.open("POST", theUrl, true); // false for synchronous request
 			xmlHttp.setRequestHeader("Content-Type", "application/json");
 			xmlHttp.send(body);
-			return xmlHttp.responseText;
+			//return xmlHttp.responseText;
 		},
 		getMaps()
 		{
@@ -324,7 +309,7 @@ export default
 				
 				"DT":
 				[
-					["DT 1", true, 0.5, 1],
+					["DT 1", false, 0.5, 1],
 					["DT 2", false, 0.5, 1],
 				],
 
@@ -584,16 +569,18 @@ a:visited { color:#8866EE; }
 
 		.mapBoxContent
 		{
-			background-size: cover; position:absolute; backdrop-filter: blur(5px) brightness(0.2); border:1px solid var(--accent);
+			background-size: cover; position:absolute; 
+			border:1px solid var(--accent);
 			.fullSize;
-			.easeAll(0.1s);
+			.easeAll(0.2s);
 			cursor: pointer;
 			h1 { color:var(--accent); }
+			backdrop-filter: brightness(0.2); 
 		}
 
 		&:hover 
 		{ 
-			.mapBoxContent { backdrop-filter: blur(0px) brightness(0.6); }
+			.mapBoxContent { backdrop-filter: blur(0px) brightness(0.6); .easeAll(0.2s); }
 			h1
 			{
 				opacity: 0.2;
